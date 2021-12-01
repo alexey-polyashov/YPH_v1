@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = "/test")
+@RequestMapping(value = "api/v21/test")
 @Slf4j
 public class TestController {
 

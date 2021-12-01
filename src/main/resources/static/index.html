@@ -2,10 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Main page</title>
+    <title>Yuo personal helper</title>
 </head>
 <body>
-<h1>Index page</h1>
-<p>Lorem ipsum</p>
+<script>
+    var testurl = document.location.protocol + "//" + document.location.host + "/api/v21/test";
+</script>
+<h1>Introduce page</h1>
+<p>Actual version api 21.0</p>
+<p> API URL - /api/v21/</p>
+<script>
+    document.write('<a href="' + testurl + '">API URL for test -' + testurl + '</a>');
+</script>
 </body>
 </html>
