@@ -258,11 +258,11 @@ CREATE TABLE IF NOT EXISTS task_executors
     donetime timestamp without time zone,
     CONSTRAINT task_executors_pkey PRIMARY KEY (id),
     CONSTRAINT fkt_task_id FOREIGN KEY (task)
-        REFERENCES yph_data.tasks (id) MATCH SIMPLE
+        REFERENCES tasks (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
     CONSTRAINT fkt_user_id FOREIGN KEY ("user")
-        REFERENCES yph_data.users (id) MATCH SIMPLE
+        REFERENCES users (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
