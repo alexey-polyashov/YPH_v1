@@ -1,14 +1,17 @@
-package ru.yph.entities;
+package ru.yph.entities.user;
 
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
-@Table(name = "positions")
 @Entity
-public class Position {
+@Data
+@Table(name = "roles")
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -18,10 +21,18 @@ public class Position {
     private String name;
 
     @CreationTimestamp
-    @Column(name="created_at")
+    @Column(name="create_at")
     private LocalDateTime createTime;
 
     @UpdateTimestamp
-    @Column(name="updated_at")
+    @Column(name="update_at")
     private LocalDateTime updateTime;
+
+    @ManyToMany
+    @JoinTable(name = "roles_grants",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "grant_id"))
+
+    private Set<RoleGrant> roleGrants;
+
 }

@@ -1,0 +1,74 @@
+
+<main style = "flex-grow: 1; flex-shrink: 0;flex-basis: auto;">
+
+    <div class="container">
+        <div id = "userlist">
+            <div style="flex-grow: 1">
+                <h2>Список пользователей</h2>
+            </div>
+            <div>
+                <a href="#!/users/newuser" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" ng-click="addUser(p.id)">Добавить</a>
+            </div>
+        </div>
+        <div>
+
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#!/users" ng-click="clicPrevPage()">Пред.</a></li>
+                <li class="page-item {{(pageNumbers[0] == pageCounter) ? 'active' : ''}}"><a class="page-link" href="#!/users" ng-click="goToPage(pageNumbers[0])">{{viewedPageNumbers[0]}}</a></li>
+                <li class="page-item {{(pageNumbers[1] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[1]"><a class="page-link" href="#!/users" ng-click="goToPage(pageNumbers[1])">{{viewedPageNumbers[1]}}</a></li>
+                <li class="page-item {{(pageNumbers[2] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[2]"><a class="page-link" href="#!/users" ng-click="goToPage(pageNumbers[2])">{{viewedPageNumbers[2]}}</a></li>
+                <li class="page-item"><a class="page-link" href="#!/users" ng-click="clicNextPage()">След.</a></li>
+            </ul>
+        </nav>
+
+        <table class="table table-hover">
+            <thead class="thead-default">
+            <tr>
+                <th>Идентификатор</th>
+                <th>Изображение</th>
+                <th>Логин</th>
+                <th>Email</th>
+                <th>Краткое имя</th>
+                <th>Дата рождения</th>
+                <th>Подразделение</th>
+                <th>Должность</th>
+                <th>Роли</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="u in users">
+                <td>{{u.id}}</td>
+                <td><img height="80px" src="{{baseURL_filesAPI + u.image}}/getimage/small"></td>
+                <td>{{u.login}}</td>
+                <td>{{u.email}}</td>
+                <td>{{u.shortname}}</td>
+                <td>{{u.birthday}}</td>
+                <td>{{u.division}}</td>
+                <td>{{u.position}}</td>
+                <td>{{u.users_roles}}</td>
+                <td></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3">Total count: <span>{{users_count}}</span></td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#!/users" ng-click="clicPrevPage()">Пред.</a></li>
+                <li class="page-item {{(pageNumbers[0] == pageCounter) ? 'active' : ''}}"><a class="page-link" href="#!/users" ng-click="goToPage(pageNumbers[0])">{{viewedPageNumbers[0]}}</a></li>
+                <li class="page-item {{(pageNumbers[1] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[1]"><a class="page-link" href="#!/users" ng-click="goToPage(pageNumbers[1])">{{viewedPageNumbers[1]}}</a></li>
+                <li class="page-item {{(pageNumbers[2] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[2]"><a class="page-link" href="#!/users" ng-click="goToPage(pageNumbers[2])">{{viewedPageNumbers[2]}}</a></li>
+                <li class="page-item"><a class="page-link" href="#!/users" ng-click="clicNextPage()">След.</a></li>
+            </ul>
+        </nav>
+
+    </div>
+
+</main>

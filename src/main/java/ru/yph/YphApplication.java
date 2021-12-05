@@ -19,7 +19,7 @@ public class YphApplication {
 	public ModelMapper myModelMapper() {
 		ModelMapper mapper = new ModelMapper();
 		mapper.getConfiguration()
-				.setMatchingStrategy(MatchingStrategies.STANDARD)
+				.setMatchingStrategy(MatchingStrategies.LOOSE)
 				.setFieldMatchingEnabled(true)
 				.setSkipNullEnabled(true)
 				.setFieldAccessLevel(PRIVATE);

@@ -159,34 +159,33 @@ CREATE TABLE IF NOT EXISTS  users_in_groups
         NOT VALID
 );
 
-CREATE TABLE IF NOT EXISTS   contacts_owners
-(
-    user_id bigint,
-    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-    CONSTRAINT contacts_owners_pkey PRIMARY KEY (id),
-    CONSTRAINT user_id FOREIGN KEY (user_id)
-        REFERENCES   users (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE CASCADE
-);
 
 CREATE TABLE IF NOT EXISTS   contacts
 (
-    ownerid bigint,
+    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     representation text COLLATE pg_catalog."default",
     address_type   addrestype NOT NULL,
     comment text COLLATE pg_catalog."default",
-    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    CONSTRAINT contacts_pkey PRIMARY KEY (id),
-    CONSTRAINT owner_id FOREIGN KEY (ownerid)
-        REFERENCES   contacts_owners (id) MATCH SIMPLE
+    CONSTRAINT contacts_pkey PRIMARY KEY (id)
+
+);
+CREATE TABLE IF NOT EXISTS contacts_owners
+(
+    user_id bigint NOT NULL,
+    contact_id bigint NOT NULL,
+    CONSTRAINT fko_contactt_id FOREIGN KEY (contact_id)
+        REFERENCES contacts (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID,
+    CONSTRAINT fko_user_id FOREIGN KEY (user_id)
+        REFERENCES users (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
         NOT VALID
 );
-
 
 CREATE TABLE IF NOT EXISTS   resultsref
 (
@@ -218,7 +217,7 @@ CREATE TABLE IF NOT EXISTS  shedules_intervals
         NOT VALID
 );
 
-CREATE TABLE IF NOT EXISTS   tasks
+CREATE TABLE IF NOT EXISTS tasks
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     shortdescribe text COLLATE pg_catalog."default" NOT NULL,
@@ -229,10 +228,7 @@ CREATE TABLE IF NOT EXISTS   tasks
     repeat_period interval,
     inition_date date,
     inition_time timestamp without time zone,
-    textresult text COLLATE pg_catalog."default",
-    result bigint,
     active boolean,
-    inprogress boolean,
     duration_of_execute interval NOT NULL,
     CONSTRAINT tasks_pkey PRIMARY KEY (id)
 );
@@ -250,23 +246,23 @@ CREATE TABLE IF NOT EXISTS   task_files
         ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS   task_executors
+CREATE TABLE IF NOT EXISTS task_executors
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     "user" bigint,
-    user_group bigint,
     task bigint NOT NULL,
+    textresult text COLLATE pg_catalog."default",
+    result bigint,
+    inprogress boolean,
+    done boolean,
+    donetime timestamp without time zone,
     CONSTRAINT task_executors_pkey PRIMARY KEY (id),
     CONSTRAINT fkt_task_id FOREIGN KEY (task)
-        REFERENCES   tasks (id) MATCH SIMPLE
+        REFERENCES yph_data.tasks (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
     CONSTRAINT fkt_user_id FOREIGN KEY ("user")
-        REFERENCES   users (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE CASCADE,
-    CONSTRAINT fkt_usergroup_id FOREIGN KEY (user_group)
-        REFERENCES   users_groups (id) MATCH SIMPLE
+        REFERENCES yph_data.users (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
@@ -289,7 +285,7 @@ CREATE TABLE IF NOT EXISTS   events
 COMMENT ON COLUMN   events.owner
     IS 'если событие общее то owner = null, иначе должно быть заполнено';
 
-CREATE TABLE IF NOT EXISTS   event_participant
+CREATE TABLE IF NOT EXISTS   event_participants
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     event bigint NOT NULL,
@@ -406,13 +402,14 @@ INSERT INTO  user_roles (user_id, user_role) VALUES (1, 1);
 INSERT INTO  user_roles (user_id, user_role) VALUES (2, 2);
 INSERT INTO  user_roles (user_id, user_role) VALUES (3, 3);
 
+INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('Москва, Зеленоград, пр. Панфиловский 1205', 'address', 'адрес проживания', 1, NULL, NULL);
+INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('+7(926) 894-45-45', 'phone', 'рабочий', 2, NULL, NULL);
+INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('8 (495) 555-44-33', 'phone', 'внутренний', 3, NULL, NULL);
 
-INSERT INTO  contacts_owners (user_id, id) OVERRIDING SYSTEM VALUE VALUES (1, 1);
-INSERT INTO  contacts_owners (user_id, id) OVERRIDING SYSTEM VALUE VALUES (2, 2);
 
-INSERT INTO  contacts (ownerid, representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (1, 'Москва, Зеленоград, пр. Панфиловский 1205', 'address', 'адрес проживания', 1, NULL, NULL);
-INSERT INTO  contacts (ownerid, representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (1, '+7(926) 894-45-45', 'phone', 'рабочий', 2, NULL, NULL);
-INSERT INTO  contacts (ownerid, representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (2, '8 (495) 555-44-33', 'phone', 'внутренний', 3, NULL, NULL);
+INSERT INTO  contacts_owners (user_id, contact_id) OVERRIDING SYSTEM VALUE VALUES (1, 1);
+INSERT INTO  contacts_owners (user_id, contact_id) OVERRIDING SYSTEM VALUE VALUES (1, 2);
+INSERT INTO  contacts_owners (user_id, contact_id) OVERRIDING SYSTEM VALUE VALUES (2, 3);
 
 
 

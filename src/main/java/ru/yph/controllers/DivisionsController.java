@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import ru.yph.dto.DivisionDTO;
 import ru.yph.entities.Division;
 import ru.yph.service.DivisionService;
@@ -22,9 +19,9 @@ import java.util.stream.Collectors;
 public class DivisionsController {
 
     private final ModelMapper myModelMapper;
-
     private final DivisionService divisionService;
 
+    //get by parrent
     @GetMapping(value="/getonparrent/{parrentid}")
     @ResponseBody
     public List<DivisionDTO> getDivisionOnParrent(@PathVariable long parrentid){
@@ -33,9 +30,32 @@ public class DivisionsController {
         return dtoList;
     }
 
+    //get by ID
     @GetMapping(value="/{id}")
     @ResponseBody
     public DivisionDTO getDivision(@PathVariable long id){
         return myModelMapper.map(divisionService.findById(id), DivisionDTO.class);
     }
+
+    //add division
+    @PostMapping(value="/")
+    @ResponseBody
+    public void addDivision(@RequestParam DivisionDTO divisionDTO){
+
+    }
+
+    //dell division
+    @DeleteMapping(value="/{id}")
+    @ResponseBody
+    public void delDivision(@PathVariable long id){
+
+    }
+
+    //get all division with children
+    @GetMapping(value="/getwihtchilds/{id}")
+    @ResponseBody
+    public List<DivisionDTO> getDivision(@RequestParam DivisionDTO divisionDTO){
+        return null;
+    }
+
 }

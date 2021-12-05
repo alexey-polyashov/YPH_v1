@@ -1,8 +1,11 @@
-package ru.yph.entities;
+package ru.yph.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import ru.yph.entities.Division;
+import ru.yph.entities.Position;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -45,10 +48,25 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "division")
+    @JsonRawValue
     private Division division;
 
     @Column(name = "image")
     private String image;
+
+    @ManyToMany
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_role"))
+    private Collection<Role> roles;
+
+
+    @OneToMany
+    @JoinTable (name="contacts_owners",
+            joinColumns=@JoinColumn (name="user_id"),
+            inverseJoinColumns=@JoinColumn(name="contact_id"))
+    private Collection<UserContact> userContacts;
+
 
     @CreationTimestamp
     @Column(name="created_at")
@@ -57,10 +75,4 @@ public class User {
     @UpdateTimestamp
     @Column(name="updated_at")
     private LocalDateTime updateTime;
-
-    @ManyToMany
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
 }

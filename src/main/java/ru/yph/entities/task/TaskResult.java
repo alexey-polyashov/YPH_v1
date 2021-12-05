@@ -1,4 +1,4 @@
-package ru.yph.entities;
+package ru.yph.entities.task;
 
 import lombok.Data;
 
@@ -6,16 +6,14 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "grants")
-public class RoleGrant {
-
+@Table(name="resultsref")
+public class TaskResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
 
-    @Column(name = "name")
-    private String name;
-
+    @Column
+    private String representation;
 
 }
