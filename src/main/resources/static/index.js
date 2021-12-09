@@ -6,6 +6,11 @@ if(baseURL.indexOf('localhost')>-1){
 
 const baseURL_usersAPI = baseUrL_application + 'api/v21/users/';
 const baseURL_filesAPI = baseUrL_application + 'api/v21/files/';
+const baseURL_divisionsAPI = baseUrL_application + 'api/v21/divisions/';
+const baseURL_positionsAPI = baseUrL_application + 'api/v21/positions/';
+const baseURL_taskAPI = baseUrL_application + 'api/v21/tasks/';
+
+
 
 (function ($localStorage) {
     'use strict';
@@ -25,6 +30,10 @@ const baseURL_filesAPI = baseUrL_application + 'api/v21/files/';
                   templateUrl: 'users/users.html',
                   controller: 'usersController'
             })
+            .when('/users/newuser', {
+                    templateUrl: 'users/newuser/newusers.html',
+                    controller: 'newUsersController'
+              })
             .when('/tasks', {
                   templateUrl: 'tasks/tasks.html',
                   controller: 'tasksController'

@@ -12,8 +12,7 @@ public class NewDivisionDTO {
     private Long id;
     @NotBlank(message="Не указано название подразделения")
     private String name;
-    private NewDivisionDTO parrent;
+    private Long parrent;
     @NotBlank(message="Не указан уровень подразделения")
-    private int depth_level;
-    private List<NewDivisionDTO> childs;
+    private int depthLevel;
 }

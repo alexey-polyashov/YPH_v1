@@ -2,10 +2,13 @@ package ru.yph.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yph.dto.task.NewTaskDTO;
 import ru.yph.entities.task.Task;
+import ru.yph.entities.user.User;
 import ru.yph.exceptions.ResourceNotFoundException;
 import ru.yph.repositories.TaskRepository;
 
@@ -26,17 +29,17 @@ public class TaskService {
 
     @Transactional
     public List<Task> findByDateBetween(Date minDate, Date maxDate) {
-        return taskRepository.findByDateBetween(minDate, maxDate);
+        return taskRepository.findByInitionDateBetween(minDate, maxDate);
     }
 
     @Transactional
     public List<Task> findByDateBetweenAndOwnerIsNull(Date minDate, Date maxDate) {
-        return taskRepository.findByDateBetweenAndOwnerIsNull(minDate, maxDate);
+        return taskRepository.findByInitionDateBetweenAndOwnerIsNull(minDate, maxDate);
     }
 
     @Transactional
     public List<Task> findByDateBetweenAndOwnerIsNotNull(Date minDate, Date maxDate) {
-        return taskRepository.findByDateBetweenAndOwnerIsNotNull(minDate, maxDate);
+        return taskRepository.findByInitionDateBetweenAndOwnerIsNotNull(minDate, maxDate);
     }
 
     public void addTask(NewTaskDTO newTask) {
@@ -49,4 +52,7 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
+    public Page<Task> findAll(int page, int recordsOnPage) {
+        return taskRepository.findAll(PageRequest.of(page, recordsOnPage));
+    }
 }

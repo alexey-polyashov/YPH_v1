@@ -23,7 +23,6 @@ public class TaskExecutor {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", insertable = false, updatable = false)
     private User user;
-    private String userName;
 
     @Column(name = "donetime")
     private Timestamp donetime;
@@ -36,9 +35,9 @@ public class TaskExecutor {
     private TaskResult result;
 
     @Column(name = "done")
-    private boolean done;
+    private Boolean done;
 
     @Column(name = "inprogress")
-    private boolean inprogress;
+    private Boolean inprogress;
 
 }

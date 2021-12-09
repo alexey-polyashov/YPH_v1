@@ -1,33 +1,33 @@
-angular.module('app').controller('usersController', function ($scope, $http, $localStorage) {
+angular.module('app').controller('tasksController', function ($scope, $http, $localStorage) {
 
-    $scope.baseURL_usersAPI = baseURL_usersAPI;
-    $scope.baseURL_userdata = '#!/users/userdata';
-    $scope.baseURL_newuser = '#!/users/newuser';
+    $scope.baseURL_taskAPI = baseURL_taskAPI;
+    $scope.baseURL_taskdata = '#!/tasks/taskdata';
+    $scope.baseURL_newtask = '#!/tasks/newtask';
 
     $scope.pageCounter = 0;
     $scope.totalPage = 0;
     $scope.pagesInView = 3;
     $scope.showPages = true;
 
-    $scope.loadUsers = function(){
+    $scope.loadTasks = function(){
         var recordsOnPage = 20;
         $http({
-            url: baseURL_usersAPI + 'userlist',
+            url: baseURL_taskAPI + 'tasklist',
             method: 'GET',
             params: {'page': $scope.pageCounter,
                      'recordsOnPage': recordsOnPage}
          })
         .then(function successCallback(response){
-            showUsers(response.data);
+            showTasks(response.data);
         }, function errorCallback(response) {
             console.log("Error: " + response);
         });
     };
 
-    function showUsers(response_data){
-        $scope.users = response_data.content;
+    function showTasks(response_data){
+        $scope.tasks = response_data.content;
         $scope.totalPage = response_data.totalPages;
-        $scope.users_count = response_data.totalElements;
+        $scope.tasks_count = response_data.totalElements;
         let minPageNumber = Math.floor($scope.pageCounter / $scope.pagesInView) * $scope.pagesInView;
         $scope.viewedPageNumbers = [];
         $scope.pageNumbers = [];
@@ -35,22 +35,24 @@ angular.module('app').controller('usersController', function ($scope, $http, $lo
             $scope.viewedPageNumbers[i] = (minPageNumber+i)+1;
             $scope.pageNumbers[i] = (minPageNumber+i);
         };
+console.log($scope.tasks);
         for(let i=0; i<response_data.numberOfElements; i++){
-            $scope.users[i].position = $scope.users[i].position.name;
-            $scope.users[i].division = $scope.users[i].division.name;
-            let roles_present = "";
-            for(let j=0; j<$scope.users[i].roles.length; j++){
-                roles_present = roles_present + $scope.users[i].roles[j].name + ", ";
+            $scope.tasks[i].repeatable = $scope.tasks[i].repeatable==true ? "X" : "";
+            $scope.tasks[i].active = $scope.tasks[i].active==true ? "X" : "";
+            $scope.tasks[i].done = $scope.tasks[i].done==true ? "X" : "";
+            let e_present = "";
+            for(let j=0; j<$scope.tasks[i].taskExecutors.length; j++){
+                e_present = e_present + $scope.tasks[i].taskExecutors[j].userName + ", ";
             }
-            roles_present = roles_present.substr(0, roles_present.length - 2);
-            $scope.users[i].roles = roles_present;
+            e_present = e_present.substr(0, e_present.length - 2);
+            $scope.tasks[i].taskExecutors = e_present;
         }
     }
 
     $scope.clicPrevPage = function () {
         if($scope.pageCounter>0){
             $scope.pageCounter -= 1;
-            $scope.loadUsers();
+            $scope.loadTasks();
         }
         return false;
     };
@@ -58,7 +60,7 @@ angular.module('app').controller('usersController', function ($scope, $http, $lo
     $scope.clicNextPage = function () {
         if($scope.pageCounter<($scope.totalPage-1)){
             $scope.pageCounter += 1;
-            $scope.loadUsers();
+            $scope.loadTasks();
         }
         return false;
     };
@@ -66,11 +68,11 @@ angular.module('app').controller('usersController', function ($scope, $http, $lo
     $scope.goToPage = function (page) {
         if(page>=0 && page<$scope.totalPage){
             $scope.pageCounter = page;
-            $scope.loadUsers();
+            $scope.loadTasks();
         }
         return false;
     };
 
-    $scope.loadUsers();
+    $scope.loadTasks();
 
 });

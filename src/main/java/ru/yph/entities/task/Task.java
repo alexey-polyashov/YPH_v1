@@ -1,6 +1,8 @@
 package ru.yph.entities.task;
 
+import com.vladmihalcea.hibernate.type.interval.PostgreSQLIntervalType;
 import lombok.Data;
+import org.hibernate.annotations.TypeDef;
 import ru.yph.entities.user.User;
 
 import javax.persistence.*;
@@ -12,6 +14,10 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "tasks")
+@TypeDef(
+        typeClass = PostgreSQLIntervalType.class,
+        defaultForType = Duration.class
+)
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,22 +25,17 @@ public class Task {
     private Long id;
 
     @Column(name = "shortdescribe")
-    private String short_describe;
+    private String shortDescribe;
 
     @Column(name = "fulldescribe")
-    private String full_describe;
-
-    @Column(name = "date")
-    private Date date;
-
-    @Column(name = "time")
-    private Time time;
+    private String fullDescribe;
 
     @Column(name = "repeatable")
-    private boolean repeatable;
+    private Boolean repeatable;
 
-    @Column(name = "repeat_period")
-    private boolean repeat_period;
+    @Column(name = "repeat_period",
+        columnDefinition = "interval")
+    private Duration repeatPeriod;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author", insertable = false, updatable = false)
@@ -44,17 +45,18 @@ public class Task {
     @JoinColumn(name = "owner", insertable = false, updatable = false)
     private User owner;
 
-    @Column(name = "duration_of_execute")
-    private Duration duration_of_execute;
+    @Column(name = "duration_of_execute",
+        columnDefinition = "interval")
+    private Duration durationOfExecute;
 
     @Column(name = "inition_date")
-    private Date inition_date;
+    private Date initionDate;
 
     @Column(name = "inition_time")
-    private Time inition_time;
+    private Time initionTime;
 
     @Column(name = "active")
-    private boolean active;
+    private Boolean active;
 
     @OneToMany(mappedBy = "task")
     private List<TaskFile> taskFiles;

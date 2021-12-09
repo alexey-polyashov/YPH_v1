@@ -10,7 +10,8 @@ import javax.validation.constraints.NotBlank;
 public class UserContactDTO {
     private Long id;
     private String representation;
-    private String addressType;
+    private Long addressType;
+    private String addressTypeName;
     private String comment;
-    private long contactOwnerId;
+    private Long contactOwnerId;
 }

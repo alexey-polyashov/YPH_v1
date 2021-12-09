@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    List<Event> findByDateBetween(Date minDate, Date maxDate);
-    List<Event> findByDateBetweenAndOwnerIsNull(Date minDate, Date maxDate);
-    List<Event> findByDateBetweenAndOwnerIsNotNull(Date minDate, Date maxDate);
+    List<Event> findByInitionDateBetween(Date minDate, Date maxDate);
+    List<Event> findByInitionDateBetweenAndOwnerIsNull(Date minDate, Date maxDate);
+    List<Event> findByInitionDateBetweenAndOwnerIsNotNull(Date minDate, Date maxDate);
 
 }

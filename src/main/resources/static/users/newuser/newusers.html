@@ -1,0 +1,75 @@
+
+<main style = "flex-grow: 1; flex-shrink: 0;flex-basis: auto;">
+
+    <div class="container">
+        <div id = "headLine">
+            <div style="flex-grow: 1">
+                <h2 class="page-header">Добавление пользователя</h2>
+            </div>
+            <div>
+                <a href="#!/users" class="btn btn-secondary">Вернуться без сохранения</a>
+            </div>
+        </div>
+        <br>
+        <span id = "message_block" ></span>
+
+        <div>
+
+            <form novalidate ng-submit="createUser()" class="js-form-address">
+
+                <div class="form-group col-md-6">
+                    <h3 class = "text-muted">Регистрационные данные</h3>
+                    <div>
+                        <label for="login">Логин</label>
+                        <input class="form-control" type="text" ng-model="newuser.login" id="login" required>
+                        <label for="email">Email</label>
+                        <input class="form-control" type="text" ng-model="newuser.email" id="email" required>
+                        <label for="password">Пароль</label>
+                        <input class="form-control" type="password" ng-model="newuser.password" id="password" required>
+                        <label for="passwordCheck">Подтверждение пароля</label>
+                        <input class="form-control" type="password" ng-model="newuser.passwordCheck" id="passwordCheck" required>
+                        <label for="shortname">Фамилия и инициалы</label>
+                        <input class="form-control" type="text" ng-model="newuser.shortname" id="shortname" required>
+                    </div>
+                </div>
+                <p><h3 class = "text-muted">Прочие данные</h3>
+                </p>
+                <div class="form-group col-md-6">
+                    <label for="fullname">Полное имя</label>
+                    <input class="form-control" type="text" ng-model="newuser.fullname" id="fullname" >
+                    <label for="birthday">Дата рождения</label>
+                    <input class="form-control" type="text" ng-model="newuser.birthday" id="birthday" >
+                    <label for="male">Пол</label>
+                    <select class="form-select" aria-describedby="inputGroup-sizing-sm" ng-model="newuser.male" id="male">
+                        <option value = "famale">Женский</option>
+                        <option value = "male">Мужской</option>
+                    </select><br>
+                    <label for="division">Подразделение</label>
+                    <select id="division"
+                            class="form-select" aria-describedby="inputGroup-sizing-sm"
+                            ng-model="newuser.division" ng-options="c.id as c.name for c in divisions">
+                        <option value = "">--Не выбрано--</option>
+                    </select><br>
+                    <label for="position">Должность</label>
+                    <select id="position"
+                            class="form-select" aria-describedby="inputGroup-sizing-sm"
+                            ng-model="newuser.position" ng-options="p.id as p.name for p in positions">
+                        <option value = "">--Не выбрано--</option>
+                    </select><br>
+                    <label for="position">Фотография</label>
+                    <input class="form-control" type="file" ng-model="newuser.image" id="image" >
+                </div>
+                <p></p>
+                <div>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                    <a href="#!/users" class="btn btn-secondary">Вернуться без сохранения</a>
+                </div>
+
+            </form>
+
+        </div>
+
+
+    </div>
+
+</main>

@@ -24,7 +24,7 @@ public class DivisionsController {
     //get by parrent
     @GetMapping(value="/getonparrent/{parrentid}")
     @ResponseBody
-    public List<DivisionDTO> getDivisionOnParrent(@PathVariable long parrentid){
+    public List<DivisionDTO> getDivisionOnParrent(@PathVariable Long parrentid){
         List<Division> dl = divisionService.findOnParrent(parrentid);
         List<DivisionDTO> dtoList= dl.stream().map((p)->myModelMapper.map(p, DivisionDTO.class)).collect(Collectors.toList());
         return dtoList;
@@ -47,15 +47,17 @@ public class DivisionsController {
     //dell division
     @DeleteMapping(value="/{id}")
     @ResponseBody
-    public void delDivision(@PathVariable long id){
-
+    public void delDivision(@PathVariable Long id){
+        divisionService.delDivision(id);
     }
 
-    //get all division with children
-    @GetMapping(value="/getwihtchilds/{id}")
+    //get all division
+    @GetMapping(value="/")
     @ResponseBody
-    public List<DivisionDTO> getDivision(@RequestParam DivisionDTO divisionDTO){
-        return null;
+    public List<DivisionDTO> getDivision(){
+        List<Division> dl = divisionService.findAllOrderList();
+        List<DivisionDTO> dtoList= dl.stream().map((p)->myModelMapper.map(p, DivisionDTO.class)).collect(Collectors.toList());
+        return dtoList;
     }
 
 }

@@ -16,4 +16,7 @@ public interface DivisionRepository extends CrudRepository<Division, Long> {
 
     //@Query("select d, p.name AS parrent_name from Division d Left Join Disision p ON d.parrent = p.id Where d.id = ?1")
     Optional<Division> findById(long id);
+    List<Division> findAll();
+    List<Division> findAllByOrderByLeftMargin();
+
 }

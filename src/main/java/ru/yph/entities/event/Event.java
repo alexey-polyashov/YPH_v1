@@ -24,11 +24,11 @@ public class Event {
     @Column(name = "fulldescribe")
     private String full_describe;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "inition_date")
+    private Date initionDate;
 
-    @Column(name = "time")
-    private Time time;
+    @Column(name = "inition_time")
+    private Time initionTime;
 
     @Column(name = "repeatable")
     private boolean repeatable;

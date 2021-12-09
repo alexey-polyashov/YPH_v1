@@ -2,6 +2,7 @@ package ru.yph.dto.event;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import ru.yph.entities.user.User;
 
 import javax.validation.constraints.NotBlank;
@@ -23,8 +24,10 @@ public class NewEventDTO {
     private boolean repeatable;
     private boolean repeat_period;
     @NotBlank(message="Не указан автор события")
-    private User authorId;
-    private User ownerId;
+    @Id
+    private long authorId;
+    @Id
+    private long ownerId;
     private Duration duration_of_execute;
     private List<NewEventParticipantDTO> eventParticipants;
 }

@@ -2,9 +2,9 @@
 <main style = "flex-grow: 1; flex-shrink: 0;flex-basis: auto;">
 
     <div class="container">
-        <div id = "userlist">
+        <div id = "headLine">
             <div style="flex-grow: 1">
-                <h2>Список пользователей</h2>
+                <h2 class="page-header">Список пользователей</h2>
             </div>
             <div>
                 <a href="#!/users/newuser" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" ng-click="addUser(p.id)">Добавить</a>
@@ -27,7 +27,7 @@
         <table class="table table-hover">
             <thead class="thead-default">
             <tr>
-                <th>Идентификатор</th>
+                <th>№</th>
                 <th>Изображение</th>
                 <th>Логин</th>
                 <th>Email</th>
@@ -48,7 +48,7 @@
                 <td>{{u.birthday}}</td>
                 <td>{{u.division}}</td>
                 <td>{{u.position}}</td>
-                <td>{{u.users_roles}}</td>
+                <td>{{u.roles}}</td>
                 <td></td>
             </tr>
             </tbody>

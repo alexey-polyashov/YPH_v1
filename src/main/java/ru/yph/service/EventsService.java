@@ -26,17 +26,17 @@ public class EventsService {
 
     @Transactional
     public List<Event> findByDateBetween(Date minDate, Date maxDate) {
-        return eventRepository.findByDateBetween(minDate, maxDate);
+        return eventRepository.findByInitionDateBetween(minDate, maxDate);
     }
 
     @Transactional
     public List<Event> findByDateBetweenAndOwnerIsNull(Date minDate, Date maxDate) {
-        return eventRepository.findByDateBetweenAndOwnerIsNull(minDate, maxDate);
+        return eventRepository.findByInitionDateBetweenAndOwnerIsNull(minDate, maxDate);
     }
 
     @Transactional
     public List<Event> findByDateBetweenAndOwnerIsNotNull(Date minDate, Date maxDate) {
-        return eventRepository.findByDateBetweenAndOwnerIsNotNull(minDate, maxDate);
+        return eventRepository.findByInitionDateBetweenAndOwnerIsNotNull(minDate, maxDate);
     }
 
     public void addEvent(NewEventDTO newEvent) {

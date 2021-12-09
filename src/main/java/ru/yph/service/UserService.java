@@ -12,6 +12,7 @@ import ru.yph.exceptions.ResourceNotFoundException;
 import ru.yph.repositories.UserRepository;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,10 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PositionService positionService;
+    private final DivisionService divisionService;
+    private final AddressTypeService addressTypeService;
+
     private final ModelMapper myModelMapper;
 
     public Optional<User> findById(long id){
@@ -32,7 +37,8 @@ public class UserService {
         String login = principal.getName();
         return userRepository.findByLogin(login);
     }
-    public Optional<User> findByEmail(String email){
+    public List<User> findByEmail(String email){
+
         return userRepository.findByEmail(email);
     }
 
@@ -42,17 +48,20 @@ public class UserService {
     }
 
     public void addUser(NewUserDTO newUserData) {
-        User userData = myModelMapper.map(
-                newUserData
-                ,User.class);
-        userRepository.save(userData);
+
+        User userData = new User();
+        userData.toUser(newUserData, positionService, divisionService, addressTypeService);
+        //User userData = myModelMapper.map(
+        //        newUserData
+        //        ,User.class);
+        userRepository.saveAndFlush(userData);
     }
 
     @Transactional
     private void setImage(Long id, String imgPath){
         User userData = findById(id).orElseThrow(()->new ResourceNotFoundException("User with id '" + id + "' not found!"));
         userData.setImage(imgPath);
-        userRepository.save(userData);
+        userRepository.saveAndFlush(userData);
     }
 
     public void delUser(Long id) {

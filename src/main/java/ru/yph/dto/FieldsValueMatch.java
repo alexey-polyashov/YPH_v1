@@ -1,5 +1,7 @@
 package ru.yph.dto;
 
+import lombok.Data;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
@@ -14,6 +16,10 @@ public @interface FieldsValueMatch {
 
     String field();
     String fieldMatch();
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)

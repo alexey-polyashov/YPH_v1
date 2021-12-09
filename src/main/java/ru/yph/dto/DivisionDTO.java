@@ -11,5 +11,5 @@ import java.util.List;
 public class DivisionDTO {
     private Long id;
     private String name;
-    private int depth_level;
+    private int depthLevel;
 }

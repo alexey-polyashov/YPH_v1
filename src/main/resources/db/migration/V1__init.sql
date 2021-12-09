@@ -12,7 +12,7 @@ CREATE TYPE males AS ENUM
 
 --TABLES
 
-CREATE TABLE IF NOT EXISTS   divisions
+CREATE TABLE IF NOT EXISTS divisions
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     name text COLLATE pg_catalog."default",
@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS   divisions
     depth_level integer DEFAULT 1,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
+    left_margin integer,
+    right_margin integer,
     CONSTRAINT divisions_pkey PRIMARY KEY (id)
 );
 
@@ -32,7 +34,7 @@ CREATE TABLE IF NOT EXISTS   positions
     CONSTRAINT positions_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS  users
+CREATE TABLE IF NOT EXISTS users
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     login text COLLATE pg_catalog."default" NOT NULL,
@@ -41,23 +43,21 @@ CREATE TABLE IF NOT EXISTS  users
     fullname text COLLATE pg_catalog."default",
     shortname text COLLATE pg_catalog."default",
     birthday date,
-    male  males,
     "position" bigint,
     division bigint,
     image text COLLATE pg_catalog."default",
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
+    male character varying(7) COLLATE pg_catalog."default",
     CONSTRAINT users_pkey PRIMARY KEY (id),
     CONSTRAINT division_id FOREIGN KEY (division)
-        REFERENCES  divisions (id) MATCH SIMPLE
+        REFERENCES divisions (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID,
+        ON DELETE NO ACTION,
     CONSTRAINT position_id FOREIGN KEY ("position")
-        REFERENCES  positions (id) MATCH SIMPLE
+        REFERENCES positions (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
-        NOT VALID
 );
 
 CREATE INDEX IF NOT EXISTS fki_division_id
@@ -160,17 +160,34 @@ CREATE TABLE IF NOT EXISTS  users_in_groups
 );
 
 
-CREATE TABLE IF NOT EXISTS   contacts
+CREATE TABLE IF NOT EXISTS address_types
+(
+    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT address_types_pkey PRIMARY KEY (id)
+);
+
+
+CREATE TABLE IF NOT EXISTS contacts
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     representation text COLLATE pg_catalog."default",
-    address_type   addrestype NOT NULL,
     comment text COLLATE pg_catalog."default",
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    CONSTRAINT contacts_pkey PRIMARY KEY (id)
-
+    address_type bigint,
+    CONSTRAINT contacts_pkey PRIMARY KEY (id),
+    CONSTRAINT fkat_address_types FOREIGN KEY (address_type)
+        REFERENCES address_types (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
 );
+
+CREATE INDEX IF NOT EXISTS fki_fkat_address_types
+    ON contacts USING btree
+    (address_type ASC NULLS LAST);
+
 CREATE TABLE IF NOT EXISTS contacts_owners
 (
     user_id bigint NOT NULL,
@@ -227,7 +244,7 @@ CREATE TABLE IF NOT EXISTS tasks
     repeatable boolean,
     repeat_period interval,
     inition_date date,
-    inition_time timestamp without time zone,
+    inition_time time without time zone,
     active boolean,
     duration_of_execute interval NOT NULL,
     CONSTRAINT tasks_pkey PRIMARY KEY (id)
@@ -236,11 +253,11 @@ CREATE TABLE IF NOT EXISTS tasks
 CREATE TABLE IF NOT EXISTS   task_files
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-    tasks bigint NOT NULL,
+    task bigint NOT NULL,
     representation text COLLATE pg_catalog."default",
     path text COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT task_files_pkey PRIMARY KEY (id),
-    CONSTRAINT fkf_task_id FOREIGN KEY (tasks)
+    CONSTRAINT fkf_task_id FOREIGN KEY (task)
         REFERENCES   tasks (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
@@ -267,13 +284,13 @@ CREATE TABLE IF NOT EXISTS task_executors
         ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS   events
+CREATE TABLE IF NOT EXISTS events
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     shortdescribe text COLLATE pg_catalog."default" NOT NULL,
     fulldescribe text COLLATE pg_catalog."default",
-    date date NOT NULL,
-    "time" time without time zone NOT NULL,
+    inition_date date NOT NULL,
+    inition_time time without time zone NOT NULL,
     repeatable boolean,
     repeat_period interval,
     author bigint NOT NULL,
@@ -303,16 +320,21 @@ CREATE TABLE IF NOT EXISTS   event_participants
         NOT VALID
 );
 
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (1, 'Администрация', NULL, 1, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (2, 'Факультет 1', 1, 2, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (3, 'Факультет 2', 1, 2, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (4, 'Факультет 3', 1, 2, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (5, 'Кафедра 1_1', 2, 3, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (6, 'Кафедра 1_2', 2, 3, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (7, 'Кафедра 2_1', 3, 3, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (8, 'Кафедра 2_2', 3, 3, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (9, 'Кафедра 2_3', 3, 3, NULL, NULL);
-INSERT INTO  divisions (id, name, parrent, depth_level, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES (10, 'Кафедра 3_1', 4, 3, NULL, NULL);
+INSERT INTO  address_types (name) OVERRIDING SYSTEM VALUE VALUES ('Номер телефона');
+INSERT INTO  address_types (name) OVERRIDING SYSTEM VALUE VALUES ('Email');
+INSERT INTO  address_types (name) OVERRIDING SYSTEM VALUE VALUES ('Адрес');
+
+
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (1, 'Администрация', NULL, 1, 1, 2);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (2, 'Факультет 1', 1, 2, 3, 8);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (3, 'Факультет 2', 1, 2, 9, 16);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (4, 'Факультет 3', 1, 2, 17, 20);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (5, 'Кафедра 1_1', 2, 3, 4, 5);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (6, 'Кафедра 1_2', 2, 3, 6, 7);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (7, 'Кафедра 2_1', 3, 3, 10, 11);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (8, 'Кафедра 2_2', 3, 3, 12, 13);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (9, 'Кафедра 2_3', 3, 3, 14, 15);
+INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (10, 'Кафедра 3_1', 4, 3, 18, 19);
 
 
 INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ('task_read');
@@ -351,9 +373,9 @@ INSERT INTO  positions ( name, created_at, updated_at) OVERRIDING SYSTEM VALUE V
 INSERT INTO  positions (name, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ( 'Начальник кафедры', NULL, NULL);
 INSERT INTO  positions (name, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ( 'Преподаватель', NULL, NULL);
 
-INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Администратор', '$2y$10$63qSE5z1PJRcO7zpaaJ/8.vWYf0qNNgJTUetLHr4VYJnDAjHEPcdS', 'test@test.ru', 'Администратор', 'Администратор', NULL, NULL, 1, 1, NULL, NULL, NULL);
-INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Руководитель', '$2y$10$Wb389Ztb1HaoPGPGyJUtx.yFgNA9Q3BO9KxfAPf/DHbHzd6fuObHW', 'test@test.ru', 'Руководитель', 'Руководитель', NULL, NULL, 3, 2, NULL, NULL, NULL);
-INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Исполнитель', '$2y$10$Wb389Ztb1HaoPGPGyJUtx.yFgNA9Q3BO9KxfAPf/DHbHzd6fuObHW', 'test@test.ru', 'Исполнитель', 'Исполнитель', NULL, NULL, 5, 3, NULL, NULL, NULL);
+INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Администратор', '$2y$10$63qSE5z1PJRcO7zpaaJ/8.vWYf0qNNgJTUetLHr4VYJnDAjHEPcdS', 'test@test.ru', 'Администратор', 'Петров О.П', '1979-12-12', 'male', 1, 1, NULL, NULL, NULL);
+INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Руководитель', '$2y$10$Wb389Ztb1HaoPGPGyJUtx.yFgNA9Q3BO9KxfAPf/DHbHzd6fuObHW', 'test@test.ru', 'Руководитель', 'Лошадина М.В', '1980-09-21', 'female', 3, 2, NULL, NULL, NULL);
+INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Исполнитель', '$2y$10$Wb389Ztb1HaoPGPGyJUtx.yFgNA9Q3BO9KxfAPf/DHbHzd6fuObHW', 'test@test.ru', 'Исполнитель', 'Иванов А.И.', '1987-01-25', 'male', 5, 3, NULL, NULL, NULL);
 
 INSERT INTO  roles (name, create_at, update_at) OVERRIDING SYSTEM VALUE VALUES ('Администратор', NULL, NULL);
 INSERT INTO  roles (name, create_at, update_at) OVERRIDING SYSTEM VALUE VALUES ('Руководитель', NULL, NULL);
@@ -402,15 +424,28 @@ INSERT INTO  user_roles (user_id, user_role) VALUES (1, 1);
 INSERT INTO  user_roles (user_id, user_role) VALUES (2, 2);
 INSERT INTO  user_roles (user_id, user_role) VALUES (3, 3);
 
-INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('Москва, Зеленоград, пр. Панфиловский 1205', 'address', 'адрес проживания', 1, NULL, NULL);
-INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('+7(926) 894-45-45', 'phone', 'рабочий', 2, NULL, NULL);
-INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('8 (495) 555-44-33', 'phone', 'внутренний', 3, NULL, NULL);
+INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('Москва, Зеленоград, пр. Панфиловский 1205', 3, 'адрес проживания', 1, NULL, NULL);
+INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('+7(926) 894-45-45', 1, 'рабочий', 2, NULL, NULL);
+INSERT INTO  contacts (representation, address_type, comment, id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('8 (495) 555-44-33', 1, 'внутренний', 3, NULL, NULL);
 
 
 INSERT INTO  contacts_owners (user_id, contact_id) OVERRIDING SYSTEM VALUE VALUES (1, 1);
 INSERT INTO  contacts_owners (user_id, contact_id) OVERRIDING SYSTEM VALUE VALUES (1, 2);
 INSERT INTO  contacts_owners (user_id, contact_id) OVERRIDING SYSTEM VALUE VALUES (2, 3);
 
+INSERT INTO tasks (
+shortdescribe, fulldescribe, author, inition_date, inition_time, active, duration_of_execute) VALUES (
+'провести экзамен по английскому'::text, 'провести экзамен по анлийскому у 5 курса'::text, '2'::bigint, '2021-12-21'::date, '10:00:00'::time without time zone, true::boolean, '3 hours'::interval);
+INSERT INTO tasks (
+shortdescribe, fulldescribe, author, inition_date, inition_time, active, duration_of_execute) VALUES (
+'провести экзамен по психологии'::text, 'провести экзамен по психологии у 5 курса'::text, '2'::bigint, '2021-12-21'::date, '15:00:00'::time without time zone, true::boolean, '3 hours'::interval);
+INSERT INTO tasks (
+shortdescribe, fulldescribe, author, inition_date, inition_time, active, duration_of_execute) VALUES (
+'провести субботник'::text, 'провести субботник на территории ВУЗа'::text, '2'::bigint, '2021-12-19'::date, '09:00:00'::time without time zone, true::boolean, '4 hours'::interval);
 
+
+INSERT INTO task_executors ("user", task) VALUES (3, 1);
+INSERT INTO task_executors ("user", task) VALUES (3, 2);
+INSERT INTO task_executors ("user", task) VALUES (2, 3);
 
 

@@ -28,7 +28,11 @@ public class Division {
     private Division parrent;
 
     @Column(name = "depth_level")
-    private int depth_level;
+    private int depthLevel;
+    @Column(name = "left_margin")
+    private int leftMargin;
+    @Column(name = "right_margin")
+    private int rightMargin;
 
     @CreationTimestamp
     @Column(name="created_at")

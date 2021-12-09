@@ -20,8 +20,9 @@ public class UserContact {
     @Column(name="representation")
     private String representation;
 
-    @Column(name="address_type")
-    private String addressType;
+    @ManyToOne
+    @JoinColumn(name="address_type")
+    private AddressType addressType;
 
     @Column(name="comment")
     private String comment;

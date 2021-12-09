@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class UserDTO {
+public class UserDTOWithContacts {
     private Long id;
     private String login;
     private String email;
@@ -23,4 +23,5 @@ public class UserDTO {
     private DivisionDTO division;
     private String image;
     private List<RoleDTO> roles = new ArrayList<>();
+    private List<UserContactDTO> UserContacts = new ArrayList<>();
 }

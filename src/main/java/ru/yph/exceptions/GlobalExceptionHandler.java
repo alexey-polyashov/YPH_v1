@@ -22,6 +22,10 @@ public class GlobalExceptionHandler {
         List<Violation> violations = e.getBindingResult().getFieldErrors().stream()
                 .map(error -> new Violation(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.toList());
+        List<Violation> violationsGlobal = e.getBindingResult().getGlobalErrors().stream()
+                .map(error -> new Violation("globalerror", error.getDefaultMessage()))
+                .collect(Collectors.toList());
+        violations.addAll(violationsGlobal);
         return new ResponseEntity<>(violations, HttpStatus.BAD_REQUEST);
     }
 
@@ -35,6 +39,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> catchOtherException(Exception e){
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(
+                e.getCause()+ "\n" +
+                e.getStackTrace()[0], HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

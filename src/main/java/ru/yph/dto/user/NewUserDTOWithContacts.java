@@ -1,15 +1,11 @@
 package ru.yph.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import ru.yph.dto.FieldsValueMatch;
 import ru.yph.dto.UniqUserEmail;
 import ru.yph.dto.UniqUserName;
-import ru.yph.entities.Division;
-import ru.yph.entities.Position;
-import ru.yph.entities.user.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -25,7 +21,7 @@ import java.util.List;
                 message = "Пароль и проверка пароля не совпадают"
         )
 )
-public class NewUserDTO {
+public class NewUserDTOWithContacts {
     @NotBlank(message = "Не указан логин")
     @UniqUserName
     private String login;
@@ -44,6 +40,7 @@ public class NewUserDTO {
     private Long division;
     private String image;
     private List<RoleDTO> users_roles;
+    private List<NewUserContactDTO> UserContacts;
     @NotBlank(message = "Не указан пароль")
     private String password;
     @NotBlank(message = "Не указано подтверждение пароля")
