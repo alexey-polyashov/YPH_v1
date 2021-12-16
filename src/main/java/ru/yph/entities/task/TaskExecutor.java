@@ -17,27 +17,27 @@ public class TaskExecutor {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task", insertable = false, updatable = false)
+    @JoinColumn(name = "task")
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "donetime")
-    private Timestamp donetime;
+    private Timestamp doneTime;
 
     @Column(name = "textresult")
-    private String textresult;
+    private String textResult;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "result", insertable = false, updatable = false)
+    @JoinColumn(name = "result")
     private TaskResult result;
 
     @Column(name = "done")
     private Boolean done;
 
     @Column(name = "inprogress")
-    private Boolean inprogress;
+    private Boolean inProgress;
 
 }

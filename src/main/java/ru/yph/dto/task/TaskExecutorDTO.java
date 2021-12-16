@@ -23,21 +23,19 @@ public class TaskExecutorDTO {
     private Boolean done;
     private Boolean inprogress;
 
-    public static TaskExecutorDTO createDTO(TaskExecutor te){
-        TaskExecutorDTO dto = new TaskExecutorDTO();
-        dto.setId(te.getId());
-        dto.setTaskId(te.getTask().getId());
-        dto.setUserId(te.getUser().getId());
-        dto.setUserName(te.getUser().getShortname());
-        dto.setDonetime(te.getDonetime());
-        dto.setTextresult(te.getTextresult());
+    public TaskExecutorDTO(TaskExecutor te){
+        this.setId(te.getId());
+        this.setTaskId(te.getTask().getId());
+        this.setUserId(te.getUser().getId());
+        this.setUserName(te.getUser().getShortname());
+        this.setDonetime(te.getDoneTime());
+        this.setTextresult(te.getTextResult());
         if(te.getResult()!=null) {
-            dto.setResultId(te.getResult().getId());
-            dto.setResultName(te.getResult().getRepresentation());
+            this.setResultId(te.getResult().getId());
+            this.setResultName(te.getResult().getRepresentation());
         }
-        dto.setDone(te.getDone());
-        dto.setInprogress(te.getInprogress());
-        return dto;
+        this.setDone(te.getDone());
+        this.setInprogress(te.getInProgress());
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByInitionDateBetween(Date minDate, Date maxDate);
-    List<Task> findByInitionDateBetweenAndOwnerIsNull(Date minDate, Date maxDate);
-    List<Task> findByInitionDateBetweenAndOwnerIsNotNull(Date minDate, Date maxDate);
+    List<Task> findByInitionDateBetweenAndCommonIsTrue(Date minDate, Date maxDate);
+    List<Task> findByInitionDateBetweenAndCommonIsFalse(Date minDate, Date maxDate);
 
 }

@@ -7,70 +7,107 @@
                 <h2 class="page-header">Список задач</h2>
             </div>
             <div>
-                <a href="#!/tasks/newtask" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" ng-click="addTask(p.id)">Добавить</a>
+                <a href="#!/tasks/edittask" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" ng-click="addTask(p.id)">Добавить</a>
             </div>
         </div>
         <div>
 
         </div>
 
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="#!/tasks" ng-click="clicPrevPage()">Пред.</a></li>
-                <li class="page-item {{(pageNumbers[0] == pageCounter) ? 'active' : ''}}"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[0])">{{viewedPageNumbers[0]}}</a></li>
-                <li class="page-item {{(pageNumbers[1] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[1]"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[1])">{{viewedPageNumbers[1]}}</a></li>
-                <li class="page-item {{(pageNumbers[2] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[2]"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[2])">{{viewedPageNumbers[2]}}</a></li>
-                <li class="page-item"><a class="page-link" href="#!/tasks" ng-click="clicNextPage()">След.</a></li>
-            </ul>
-        </nav>
+        <div class="row  g-12 mb-3">
+            <div class="col-sm-12">
+            </div>
+            <div class="col-sm-3">
+                <h3 class = "text-muted">Фильтры</h3>
+                <form ng-submit="loadTasks()">
+                    <input type="button" class="btn btn-info" ng-click="addNewFilter()" value="Добавить фильтр">
+                    <p></p>
+                    <fieldset data-ng-repeat="field in taskFilter track by $index">
+                        <select class="form-select filterName" aria-describedby="inputGroup-sizing-sm" ng-model="taskFilter[$index].fieldName" id="taskFilter_name">
+                            <option value = "author">Автор</option>
+                            <option value = "startDate">Начало периода</option>
+                            <option value = "endDate">Окончание периода</option>
+                            <option value = "executor">Исполнитель</option>
+                        </select><br>
+                        <select class="form-select" ng-if="taskFilter[$index].fieldName=='author' || taskFilter[$index].fieldName=='executor'"
+                                aria-describedby="inputGroup-sizing-sm" ng-model="taskFilter[$index].fieldValue" id="taskFilterUser_value" ng-options="u.id as u.shortname for u in users">
+                            <option value = "">--Не выбран--</option>
+                        </select>
+                        <input ng-if="taskFilter[$index].fieldName=='startDate' || taskFilter[$index].fieldName=='endDate'"
+                               type="date" ng-model="taskFilter[$index].fieldValueDate" id="taskFilterDate_value"><br>
+                        <button type="button" class="btn btn-default btn-sm" ng-click="removeFilter($index)">
+                            <span class="glyphicon glyphicon-minus" class="bg-danger"></span> Удалить
+                        </button>
 
-        <table class="table table-hover">
-            <thead class="thead-default">
-            <tr>
-                <th>№</th>
-                <th>Активна</th>
-                <th>Краткое описание</th>
-                <th>Автор</th>
-                <th>Повторяющееся</th>
-                <th>Период повторения</th>
-                <th>Дата начала выполнения</th>
-                <th>Время начала выполнения</th>
-                <th>Длительность</th>
-                <th>Исполнители</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="t in tasks">
-                <td>{{t.id}}</td>
-                <td>{{t.active}}</td>
-                <td>{{t.shortDescribe}}</td>
-                <td>{{t.authorName}}</td>
-                <td>{{t.repeatable}}</td>
-                <td>{{t.repeatPeriod}}</td>
-                <td>{{t.initionDate}}</td>
-                <td>{{t.initionTime}}</td>
-                <td>{{t.durationOfExecute}}</td>
-                <td>{{t.taskExecutors}}</td>
-                <td></td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="3">Total count: <span>{{tasks_count}}</span></td>
-            </tr>
-            </tfoot>
-        </table>
+                    </fieldset>
+                    <p></p>
+                    <div class="col-12">
+                        <button id="doFilter" class="btn btn-primary" type="submit">Применить</button>
+                    </div>
+                </form>
+            </div>
 
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="#!/tasks" ng-click="clicPrevPage()">Пред.</a></li>
-                <li class="page-item {{(pageNumbers[0] == pageCounter) ? 'active' : ''}}"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[0])">{{viewedPageNumbers[0]}}</a></li>
-                <li class="page-item {{(pageNumbers[1] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[1]"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[1])">{{viewedPageNumbers[1]}}</a></li>
-                <li class="page-item {{(pageNumbers[2] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[2]"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[2])">{{viewedPageNumbers[2]}}</a></li>
-                <li class="page-item"><a class="page-link" href="#!/tasks" ng-click="clicNextPage()">След.</a></li>
-            </ul>
-        </nav>
+            <div class="col-sm-9">
+                <h3 class = "text-muted">Задачи</h3>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#!/tasks" ng-click="clicPrevPage()">Пред.</a></li>
+                        <li class="page-item {{(pageNumbers[0] == pageCounter) ? 'active' : ''}}"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[0])">{{viewedPageNumbers[0]}}</a></li>
+                        <li class="page-item {{(pageNumbers[1] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[1]"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[1])">{{viewedPageNumbers[1]}}</a></li>
+                        <li class="page-item {{(pageNumbers[2] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[2]"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[2])">{{viewedPageNumbers[2]}}</a></li>
+                        <li class="page-item"><a class="page-link" href="#!/tasks" ng-click="clicNextPage()">След.</a></li>
+                    </ul>
+                </nav>
 
+                <table class="table table-hover table-bordered">
+                    <thead class="thead-default">
+                    <tr>
+                        <th>№</th>
+                        <th>Активна</th>
+                        <th>Краткое описание</th>
+                        <th>Автор</th>
+                        <th>Повторяющееся</th>
+                        <th>Период повторения</th>
+                        <th>Дата начала выполнения</th>
+                        <th>Время начала выполнения</th>
+                        <th>Общая задача</th>
+                        <th>Длительность</th>
+                        <th>Исполнители</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="t in tasks">
+                        <td>{{t.id}}</td>
+                        <td>{{t.active}}</td>
+                        <td>{{t.shortDescribe}}</td>
+                        <td>{{t.authorName}}</td>
+                        <td>{{t.repeatable}}</td>
+                        <td>{{t.repeatPeriod}}</td>
+                        <td>{{t.initionDate}}</td>
+                        <td>{{t.initionTime}}</td>
+                        <td>{{t.common}}</td>
+                        <td>{{t.durationOfExecute}}</td>
+                        <td>{{t.taskExecutors}}</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="11">Total count: <span>{{tasks_count}}</span></td>
+                    </tr>
+                    </tfoot>
+                </table>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#!/tasks" ng-click="clicPrevPage()">Пред.</a></li>
+                        <li class="page-item {{(pageNumbers[0] == pageCounter) ? 'active' : ''}}"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[0])">{{viewedPageNumbers[0]}}</a></li>
+                        <li class="page-item {{(pageNumbers[1] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[1]"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[1])">{{viewedPageNumbers[1]}}</a></li>
+                        <li class="page-item {{(pageNumbers[2] == pageCounter) ? 'active' : ''}}" ng-if="pageNumbers[2]"><a class="page-link" href="#!/tasks" ng-click="goToPage(pageNumbers[2])">{{viewedPageNumbers[2]}}</a></li>
+                        <li class="page-item"><a class="page-link" href="#!/tasks" ng-click="clicNextPage()">След.</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
 
 </main>

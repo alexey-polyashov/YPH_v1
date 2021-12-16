@@ -1,0 +1,108 @@
+
+<main style = "flex-grow: 1; flex-shrink: 0;flex-basis: auto;">
+
+    <div class="container">
+
+        <div class = "row">
+            <div id = "headLine">
+                <div style="flex-grow: 1">
+                    <h2 class="page-header">Добавление задачи</h2>
+                </div>
+                <div>
+                    <a href="#!/tasks" class="btn btn-secondary">Вернуться без сохранения</a>
+                </div>
+            </div>
+            <br>
+        </div>
+
+        <div class = "row g-12 mb-3">
+
+            <form  ng-submit="createTask()" class="js-form-tasks">
+
+                <div class="col-sm-5">
+                    <h3 class = "text-muted">Данные задачи</h3>
+                    <div>
+                        <input type="hidden" ng-model="task.id">
+                        <label for="shortDescribe">Краткое описание</label>
+                        <input class="form-control" type="text" ng-model="task.shortDescribe" id="shortDescribe" required>
+                        <label for="fullDescribe">Развернутое описание</label>
+                        <textarea class="form-control" type="text" ng-model="task.fullDescribe" id="fullDescribe" placeholder="опишите задачу для исполнителей">
+                        </textarea>
+                        <label for="initionDate">Дата начала</label>
+                        <input class="form-control" type="text" ng-model="task.initionDate" id="initionDate" required>
+                        <label for="initionTime">Время начала</label>
+                        <input class="form-control" type="text" ng-model="task.initionTime" id="initionTime" required>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" ng-model="task.repeatable" id="repeatable">
+                            <label class="form-check-label" for="repeatable">Повторяющаяся</label>
+                        </div>
+                        <label for="repeatPeriod">Период повторения</label>
+                        <input class="form-control" type="text" ng-model="task.repeatPeriod" id="repeatPeriod">
+                        <label for="durationOfExecute">Продолжительность выполнения</label>
+                        <input class="form-control" type="text" ng-model="task.durationOfExecute" id="durationOfExecute" required>
+                        <label for="authorId">Автор</label>
+                        <select class="form-select" required
+                                aria-describedby="inputGroup-sizing-sm" ng-model="task.authorId" id="authorId" ng-options="u.id as u.shortname for u in users">
+                            <option value = "">--Не выбран--</option>
+                        </select><br>
+                        <div class="form-check">
+                            <label class="form-check-label" for="common">Общая</label>
+                            <input class="form-check-input" type="checkbox" ng-model="task.common" id="common">
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="active">Активна</label>
+                            <input class="form-check-input" class="form-control" type="checkbox" ng-model="task.active" id="active">
+                        </div>
+                    </div>
+
+                    <p></p>
+                    <div>
+                        <span id = "message_block" ></span>
+                        <button class="btn btn-primary" type="submit">Сохранить</button>
+                        <a href="#!/tasks" class="btn btn-secondary">Вернуться без сохранения</a>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6">
+
+                    <p><h3 class = "text-muted">Исполнители</h3>
+                    </p>
+                    <div>
+                        <input type="button" class="btn btn-info" ng-click="addNewExecutor()" value="Добавить">
+                        <fieldset data-ng-repeat="field in task.taskExecutors track by $index">
+                            <label for="taskExecutors">Исполнитель</label>
+                            <input hidden ng-model="task.taskExecutors[$index].id">
+                            <input hidden ng-model="task.taskExecutors[$index].taskId">
+                            <select class="form-select" required
+                                    aria-describedby="inputGroup-sizing-sm" ng-model="task.taskExecutors[$index].userId" id="taskExecutors" ng-options="u.id as u.shortname for u in users">
+                                <option value = "">--Не выбран--</option>
+                            </select><br>
+                            <button type="button" class="btn btn-default btn-sm" ng-click="removeExecutor($index)">
+                                <span class="glyphicon glyphicon-minus" class="bg-danger"></span> Удалить
+                            </button>
+                        </fieldset>
+                    </div>
+                    <p><h3 class = "text-muted">Файлы</h3>
+                    </p>
+                    <div>
+                        <input type="button" class="btn btn-info" ng-click="addNewFile()" value="Добавить">
+                        <fieldset data-ng-repeat="field in task.taskFiles track by $index">
+                            <input class="form-control" type="file" ng-model="task.taskFiles[]" id="image" >
+                            <button type="button" class="btn btn-default btn-sm" ng-click="removeFile($index)">
+                                <span class="glyphicon glyphicon-minus"></span> Удалить
+                            </button>
+                        </fieldset>
+                    </div>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+
+    </div>
+
+</main>

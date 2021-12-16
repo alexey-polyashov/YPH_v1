@@ -6,13 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yph.dto.task.NewFullTaskDTO;
 import ru.yph.dto.task.NewTaskDTO;
 import ru.yph.entities.task.Task;
+import ru.yph.entities.task.TaskExecutor;
 import ru.yph.entities.user.User;
 import ru.yph.exceptions.ResourceNotFoundException;
+import ru.yph.repositories.TaskExecutorRepository;
 import ru.yph.repositories.TaskRepository;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +25,9 @@ import java.util.Optional;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserService userService;
+    private final TaskFileService fileService;
+    private final TaskExecutorRepository taskExecutorRepository;
     private final ModelMapper myModelMapper;
 
     public Optional<Task> findById(long id){
@@ -34,17 +41,26 @@ public class TaskService {
 
     @Transactional
     public List<Task> findByDateBetweenAndOwnerIsNull(Date minDate, Date maxDate) {
-        return taskRepository.findByInitionDateBetweenAndOwnerIsNull(minDate, maxDate);
+        return taskRepository.findByInitionDateBetweenAndCommonIsTrue(minDate, maxDate);
     }
 
     @Transactional
     public List<Task> findByDateBetweenAndOwnerIsNotNull(Date minDate, Date maxDate) {
-        return taskRepository.findByInitionDateBetweenAndOwnerIsNotNull(minDate, maxDate);
+        return taskRepository.findByInitionDateBetweenAndCommonIsFalse(minDate, maxDate);
     }
 
-    public void addTask(NewTaskDTO newTask) {
-        Task task = myModelMapper.map(newTask, Task.class);
+    public void addTask(NewTaskDTO newTask) throws ParseException {
+        Task task = newTask.createTask(userService, this);
         taskRepository.save(task);
+    }
+
+    @Transactional
+    public void addFullTask(NewFullTaskDTO newTask) throws ParseException {
+        Task task = newTask.createTask(userService, this, fileService);
+        taskRepository.save(task);
+        for (TaskExecutor te: task.getTaskExecutors()) {
+            taskExecutorRepository.save(te);
+        }
     }
 
     public void delTask(long id) {
@@ -55,4 +71,9 @@ public class TaskService {
     public Page<Task> findAll(int page, int recordsOnPage) {
         return taskRepository.findAll(PageRequest.of(page, recordsOnPage));
     }
+
+    public Optional<TaskExecutor> findExecutorById(Long id){
+        return taskExecutorRepository.findById(id);
+    }
+
 }

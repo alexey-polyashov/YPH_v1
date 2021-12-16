@@ -71,8 +71,8 @@ CREATE TABLE IF NOT EXISTS  roles
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     name text COLLATE pg_catalog."default" NOT NULL,
-    create_at timestamp without time zone,
-    update_at timestamp without time zone,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     CONSTRAINT roles_pkey PRIMARY KEY (id)
 );
 
@@ -240,13 +240,15 @@ CREATE TABLE IF NOT EXISTS tasks
     shortdescribe text COLLATE pg_catalog."default" NOT NULL,
     fulldescribe text COLLATE pg_catalog."default",
     author bigint NOT NULL,
-    owner bigint,
     repeatable boolean,
     repeat_period interval,
     inition_date date,
     inition_time time without time zone,
     active boolean,
     duration_of_execute interval NOT NULL,
+    common boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     CONSTRAINT tasks_pkey PRIMARY KEY (id)
 );
 
@@ -256,6 +258,8 @@ CREATE TABLE IF NOT EXISTS   task_files
     task bigint NOT NULL,
     representation text COLLATE pg_catalog."default",
     path text COLLATE pg_catalog."default" NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     CONSTRAINT task_files_pkey PRIMARY KEY (id),
     CONSTRAINT fkf_task_id FOREIGN KEY (task)
         REFERENCES   tasks (id) MATCH SIMPLE
@@ -266,19 +270,21 @@ CREATE TABLE IF NOT EXISTS   task_files
 CREATE TABLE IF NOT EXISTS task_executors
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-    "user" bigint,
+    user_id bigint,
     task bigint NOT NULL,
     textresult text COLLATE pg_catalog."default",
     result bigint,
     inprogress boolean,
     done boolean,
     donetime timestamp without time zone,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     CONSTRAINT task_executors_pkey PRIMARY KEY (id),
     CONSTRAINT fkt_task_id FOREIGN KEY (task)
         REFERENCES tasks (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
-    CONSTRAINT fkt_user_id FOREIGN KEY ("user")
+    CONSTRAINT fkt_user_id FOREIGN KEY (user_id)
         REFERENCES users (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
@@ -294,19 +300,21 @@ CREATE TABLE IF NOT EXISTS events
     repeatable boolean,
     repeat_period interval,
     author bigint NOT NULL,
-    owner bigint,
     duration_of_execute interval,
+    common boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     CONSTRAINT events_pkey PRIMARY KEY (id)
 );
 
-COMMENT ON COLUMN   events.owner
-    IS 'если событие общее то owner = null, иначе должно быть заполнено';
 
 CREATE TABLE IF NOT EXISTS   event_participants
 (
     id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     event bigint NOT NULL,
     participant bigint,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     CONSTRAINT events_detail_pkey PRIMARY KEY (id),
     CONSTRAINT fke_event_id FOREIGN KEY (event)
         REFERENCES   events (id) MATCH SIMPLE
@@ -337,34 +345,32 @@ INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margi
 INSERT INTO  divisions (id, name, parrent, depth_level, left_margin, right_margin) OVERRIDING SYSTEM VALUE VALUES (10, 'Кафедра 3_1', 4, 3, 18, 19);
 
 
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ('task_read');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'task_edit');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'task_add');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'task_del');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_read');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_add');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_edit');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_del');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'division_read');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'division_add');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'division_edit');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'division_del');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'role_manage');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_group_read');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_group_add');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_group_edit');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'shedule_read');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'shedule_manage');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'common_task_read');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'common_task_manage');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'own_task_read');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'own_task_edit');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'own_task_add');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'own_task_del');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'self_task_read');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'self_task_edit');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'self_task_add');
-INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'self_task_del');
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ('task_read');--1
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'task_edit');--2
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'task_add');--3
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'task_del');--4
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_read');--5
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_add');--6
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_edit');--7
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_del');--8
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'division_read');--9
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'division_add');--10
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'division_edit');--11
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'division_del');--12
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'role_manage');--13
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_group_read');--14
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_group_add');--15
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'user_group_edit');--16
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'shedule_read');--17
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'shedule_manage');--18
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'common_task_read');--19
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'common_task_edit');--22
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'common_task_add');--23
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'common_task_del');--24
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'all_task_read');--25
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'personally_task_edit');--26
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'personally_task_add');--27
+INSERT INTO  grants (name) OVERRIDING SYSTEM VALUE VALUES ( 'personally_task_del');--28
 
 
 INSERT INTO  positions (name, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ('Администратор', NULL, NULL);
@@ -373,13 +379,13 @@ INSERT INTO  positions ( name, created_at, updated_at) OVERRIDING SYSTEM VALUE V
 INSERT INTO  positions (name, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ( 'Начальник кафедры', NULL, NULL);
 INSERT INTO  positions (name, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES ( 'Преподаватель', NULL, NULL);
 
-INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Администратор', '$2y$10$63qSE5z1PJRcO7zpaaJ/8.vWYf0qNNgJTUetLHr4VYJnDAjHEPcdS', 'test@test.ru', 'Администратор', 'Петров О.П', '1979-12-12', 'male', 1, 1, NULL, NULL, NULL);
-INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Руководитель', '$2y$10$Wb389Ztb1HaoPGPGyJUtx.yFgNA9Q3BO9KxfAPf/DHbHzd6fuObHW', 'test@test.ru', 'Руководитель', 'Лошадина М.В', '1980-09-21', 'female', 3, 2, NULL, NULL, NULL);
-INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image, created_at, updated_at) VALUES ('Исполнитель', '$2y$10$Wb389Ztb1HaoPGPGyJUtx.yFgNA9Q3BO9KxfAPf/DHbHzd6fuObHW', 'test@test.ru', 'Исполнитель', 'Иванов А.И.', '1987-01-25', 'male', 5, 3, NULL, NULL, NULL);
+INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image) VALUES ('Администратор', '$2y$10$63qSE5z1PJRcO7zpaaJ/8.vWYf0qNNgJTUetLHr4VYJnDAjHEPcdS', 'test@test.ru', 'Администратор', 'Петров О.П', '1979-12-12', 'male', 1, 1, NULL);
+INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image) VALUES ('Руководитель', '$2y$10$Wb389Ztb1HaoPGPGyJUtx.yFgNA9Q3BO9KxfAPf/DHbHzd6fuObHW', 'test@test.ru', 'Руководитель', 'Лошадина М.В', '1980-09-21', 'female', 3, 2, NULL);
+INSERT INTO  users (login, token, email, fullname, shortname, birthday, male, "position", division, image) VALUES ('Исполнитель', '$2y$10$Wb389Ztb1HaoPGPGyJUtx.yFgNA9Q3BO9KxfAPf/DHbHzd6fuObHW', 'test@test.ru', 'Исполнитель', 'Иванов А.И.', '1987-01-25', 'male', 5, 3, NULL);
 
-INSERT INTO  roles (name, create_at, update_at) OVERRIDING SYSTEM VALUE VALUES ('Администратор', NULL, NULL);
-INSERT INTO  roles (name, create_at, update_at) OVERRIDING SYSTEM VALUE VALUES ('Руководитель', NULL, NULL);
-INSERT INTO  roles (name, create_at, update_at) OVERRIDING SYSTEM VALUE VALUES ('Исполнитель', NULL, NULL);
+INSERT INTO  roles (name) OVERRIDING SYSTEM VALUE VALUES ('Администратор');
+INSERT INTO  roles (name) OVERRIDING SYSTEM VALUE VALUES ('Руководитель');
+INSERT INTO  roles (name) OVERRIDING SYSTEM VALUE VALUES ('Исполнитель');
 
 
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 1);
@@ -400,24 +406,37 @@ INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 15);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 16);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 17);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 18);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 19);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 20);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 21);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 22);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 23);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 24);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 25);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 26);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 1);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 2);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 3);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 4);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 5);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 9);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 14);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 17);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 19);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 21);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 24);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 25);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 26);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 1);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 5);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 9);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 14);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 17);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 19);
-INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 19);
-INSERT INTO  roles_grants (role_id, grant_id) VALUES (1, 20);
-INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 22);
-INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 23);
-INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 24);
-INSERT INTO  roles_grants (role_id, grant_id) VALUES (2, 21);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 23);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 24);
 INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 25);
+INSERT INTO  roles_grants (role_id, grant_id) VALUES (3, 26);
 
 
 INSERT INTO  user_roles (user_id, user_role) VALUES (1, 1);
@@ -444,8 +463,8 @@ shortdescribe, fulldescribe, author, inition_date, inition_time, active, duratio
 'провести субботник'::text, 'провести субботник на территории ВУЗа'::text, '2'::bigint, '2021-12-19'::date, '09:00:00'::time without time zone, true::boolean, '4 hours'::interval);
 
 
-INSERT INTO task_executors ("user", task) VALUES (3, 1);
-INSERT INTO task_executors ("user", task) VALUES (3, 2);
-INSERT INTO task_executors ("user", task) VALUES (2, 3);
+INSERT INTO task_executors (user_id, task) VALUES (3, 1);
+INSERT INTO task_executors (user_id, task) VALUES (3, 2);
+INSERT INTO task_executors (user_id, task) VALUES (2, 3);
 
 

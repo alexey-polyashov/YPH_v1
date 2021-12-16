@@ -2,13 +2,17 @@ package ru.yph.entities.task;
 
 import com.vladmihalcea.hibernate.type.interval.PostgreSQLIntervalType;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.UpdateTimestamp;
+import ru.yph.dto.task.TaskFileDTO;
 import ru.yph.entities.user.User;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -38,12 +42,8 @@ public class Task {
     private Duration repeatPeriod;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author", insertable = false, updatable = false)
+    @JoinColumn(name = "author")
     private User author;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner", insertable = false, updatable = false)
-    private User owner;
 
     @Column(name = "duration_of_execute",
         columnDefinition = "interval")
@@ -58,10 +58,21 @@ public class Task {
     @Column(name = "active")
     private Boolean active;
 
+    @Column(name = "common")
+    private Boolean common;
+
     @OneToMany(mappedBy = "task")
     private List<TaskFile> taskFiles;
 
     @OneToMany(mappedBy = "task")
     private List<TaskExecutor> taskExecutors;
+
+    @CreationTimestamp
+    @Column(name="created_at")
+    private LocalDateTime createTime;
+
+    @UpdateTimestamp
+    @Column(name="updated_at")
+    private LocalDateTime updateTime;
 
 }

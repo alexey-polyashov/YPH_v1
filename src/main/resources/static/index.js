@@ -8,7 +8,7 @@ const baseURL_usersAPI = baseUrL_application + 'api/v21/users/';
 const baseURL_filesAPI = baseUrL_application + 'api/v21/files/';
 const baseURL_divisionsAPI = baseUrL_application + 'api/v21/divisions/';
 const baseURL_positionsAPI = baseUrL_application + 'api/v21/positions/';
-const baseURL_taskAPI = baseUrL_application + 'api/v21/tasks/';
+const baseURL_tasksAPI = baseUrL_application + 'api/v21/tasks/';
 
 
 
@@ -31,13 +31,17 @@ const baseURL_taskAPI = baseUrL_application + 'api/v21/tasks/';
                   controller: 'usersController'
             })
             .when('/users/newuser', {
-                    templateUrl: 'users/newuser/newusers.html',
+                    templateUrl: 'users/newuser/newuser.html',
                     controller: 'newUsersController'
               })
             .when('/tasks', {
                   templateUrl: 'tasks/tasks.html',
                   controller: 'tasksController'
             })
+            .when('/tasks/edittask', {
+                    templateUrl: 'tasks/edittask/edittask.html',
+                    controller: 'editTaskController'
+              })
             .otherwise({
                 redirectTo: '/'
             })

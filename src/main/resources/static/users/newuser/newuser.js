@@ -71,7 +71,7 @@ angular.module('app').controller('newUsersController', function ($scope, $http, 
                             }
                         });
                     } else {
-                        angular.element(document.querySelector("#cart_message_block"))
+                        angular.element(document.querySelector("#message_block"))
                             .text("Ошибка: " + response.data)
                             .addClass("text-danger");
                     }

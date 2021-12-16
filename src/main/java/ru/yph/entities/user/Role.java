@@ -21,11 +21,11 @@ public class Role {
     private String name;
 
     @CreationTimestamp
-    @Column(name="create_at")
+    @Column(name="created_at")
     private LocalDateTime createTime;
 
     @UpdateTimestamp
-    @Column(name="update_at")
+    @Column(name="updated_at")
     private LocalDateTime updateTime;
 
     @ManyToMany

@@ -38,7 +38,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<?> catchInvalidInputDataException(NotValidFields e){
+        return new ResponseEntity<>(e.getViolations(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<?> catchOtherException(Exception e){
+        e.printStackTrace();
         return new ResponseEntity<>(
                 e.getCause()+ "\n" +
                 e.getStackTrace()[0], HttpStatus.INTERNAL_SERVER_ERROR);

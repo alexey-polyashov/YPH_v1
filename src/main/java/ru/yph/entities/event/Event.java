@@ -1,12 +1,15 @@
 package ru.yph.entities.event;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import ru.yph.entities.user.User;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -49,5 +52,13 @@ public class Event {
 
     @OneToMany(mappedBy = "event")
     private List<EventParticipant> eventParticipants;
+
+    @CreationTimestamp
+    @Column(name="created_at")
+    private LocalDateTime createTime;
+
+    @UpdateTimestamp
+    @Column(name="updated_at")
+    private LocalDateTime updateTime;
 
 }
