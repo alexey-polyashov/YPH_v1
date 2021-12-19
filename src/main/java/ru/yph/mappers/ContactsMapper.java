@@ -3,8 +3,8 @@ package ru.yph.mappers;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
-import ru.yph.dto.user.NewUserContactDTO;
-import ru.yph.dto.user.UserContactDTO;
+import ru.yph.dtos.user.NewUserContactDTO;
+import ru.yph.dtos.user.UserContactDTO;
 import ru.yph.entities.user.User;
 import ru.yph.entities.user.UserContact;
 

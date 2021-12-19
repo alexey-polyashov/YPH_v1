@@ -1,15 +1,13 @@
 package ru.yph.mappers;
 
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.yph.dto.user.*;
-import ru.yph.entities.Division;
+import ru.yph.dtos.user.*;
 import ru.yph.entities.user.User;
-import ru.yph.service.DivisionService;
-import ru.yph.service.PositionService;
+import ru.yph.services.DivisionService;
+import ru.yph.services.PositionService;
 
 import java.util.stream.Collectors;
 

@@ -1,25 +1,18 @@
 package ru.yph.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.event.TransactionalEventListener;
-import ru.yph.dto.user.NewUserContactDTO;
-import ru.yph.dto.user.NewUserDTO;
-import ru.yph.dto.user.NewUserDTOWithContacts;
-import ru.yph.dto.user.UserContactDTO;
+import ru.yph.dtos.user.NewUserContactDTO;
+import ru.yph.dtos.user.NewUserDTO;
+import ru.yph.dtos.user.NewUserDTOWithContacts;
 import ru.yph.entities.Division;
 import ru.yph.entities.Position;
 import ru.yph.exceptions.ResourceNotFoundException;
-import ru.yph.repositories.AddressTypeRepository;
-import ru.yph.service.AddressTypeService;
-import ru.yph.service.DivisionService;
-import ru.yph.service.PositionService;
-import ru.yph.service.UserContactService;
+import ru.yph.services.AddressTypeService;
+import ru.yph.services.DivisionService;
+import ru.yph.services.PositionService;
 
 import javax.persistence.*;
 import java.sql.Date;

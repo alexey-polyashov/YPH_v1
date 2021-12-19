@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.yph.dto.event.EventDTO;
-import ru.yph.dto.event.NewEventDTO;
+import ru.yph.dtos.event.EventDTO;
+import ru.yph.dtos.event.NewEventDTO;
 import ru.yph.entities.event.Event;
 import ru.yph.exceptions.ResourceNotFoundException;
-import ru.yph.service.EventsService;
+import ru.yph.services.EventsService;
 
 import java.sql.Date;
 import java.util.List;

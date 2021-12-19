@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.yph.dto.DivisionDTO;
-import ru.yph.dto.PositionDTO;
-import ru.yph.entities.Division;
+import ru.yph.dtos.DivisionDTO;
+import ru.yph.dtos.PositionDTO;
 import ru.yph.entities.Position;
-import ru.yph.service.DivisionService;
-import ru.yph.service.PositionService;
+import ru.yph.services.PositionService;
 
 import java.util.List;
 import java.util.stream.Collectors;

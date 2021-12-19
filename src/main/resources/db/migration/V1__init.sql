@@ -1,14 +1,9 @@
 
 --TYPES
 
-CREATE TYPE addrestype AS ENUM
-    ('email', 'phone', 'address');
 
 CREATE TYPE  day_type AS ENUM
     ('work', 'weekend', 'holiday', 'preholiday');
-
-CREATE TYPE males AS ENUM
-    ('female', 'male');
 
 --TABLES
 

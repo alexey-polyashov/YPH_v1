@@ -4,26 +4,29 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.yph.dto.task.FullTaskDTO;
-import ru.yph.dto.task.NewFullTaskDTO;
-import ru.yph.dto.task.NewTaskDTO;
-import ru.yph.dto.task.TaskDTO;
-import ru.yph.dto.user.NewUserDTO;
-import ru.yph.dto.user.UserDTO;
+import ru.yph.dtos.SearchCriteria;
+import ru.yph.dtos.SearchCriteriaDTO;
+import ru.yph.dtos.TaskSearchCriteriaDTO;
+import ru.yph.dtos.task.FullTaskDTO;
+import ru.yph.dtos.task.NewFullTaskDTO;
+import ru.yph.dtos.task.NewTaskDTO;
+import ru.yph.dtos.task.TaskDTO;
 import ru.yph.entities.task.Task;
-import ru.yph.entities.user.User;
+import ru.yph.exceptions.NotValidFields;
 import ru.yph.exceptions.ResourceNotFoundException;
-import ru.yph.mappers.UserMapper;
-import ru.yph.service.TaskService;
-import ru.yph.service.UserService;
+import ru.yph.exceptions.Violation;
+import ru.yph.repositories.specifications.TaskSpecificationBuilder;
+import ru.yph.services.TaskService;
+import ru.yph.services.UserService;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.sql.Date;
 import java.text.ParseException;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -35,6 +38,7 @@ public class TasksController {
 
     private final ModelMapper myModelMapper;
     private final TaskService taskService;
+    private final UserService userService;
 
 
     @GetMapping(value = "/tasklistshort")
@@ -52,6 +56,24 @@ public class TasksController {
         Page<FullTaskDTO> taskDtoPage = tasks.map(p->new FullTaskDTO(p));
         return taskDtoPage;
     }
+
+    @PostMapping(value = "/tasklist/filter")
+    @ResponseBody
+    public Page<FullTaskDTO> fullTasksList(@RequestBody TaskSearchCriteriaDTO requestDTO){
+        List<SearchCriteriaDTO> filter = requestDTO.getFilter();
+        Integer page = requestDTO.getPage();
+        Integer recordsOnPage = requestDTO.getRecordsOnPage();
+        TaskSpecificationBuilder builder = new TaskSpecificationBuilder(userService);
+        for(SearchCriteriaDTO creteriaDTO: filter) {
+            Object value = creteriaDTO.getValue();
+            builder.with(creteriaDTO.getKey(), creteriaDTO.getOperation(), value);
+        }
+        Specification<Task> spec = builder.build();
+        Page<Task> tasks = taskService.findAllwithFilter(page, recordsOnPage, spec);
+        Page<FullTaskDTO> taskDtoPage = tasks.map(p->new FullTaskDTO(p));
+        return taskDtoPage;
+    }
+
 
     @GetMapping(value = "/{id}")
     @ResponseBody

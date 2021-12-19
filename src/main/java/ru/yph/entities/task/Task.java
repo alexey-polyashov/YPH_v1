@@ -5,7 +5,6 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.UpdateTimestamp;
-import ru.yph.dto.task.TaskFileDTO;
 import ru.yph.entities.user.User;
 
 import javax.persistence.*;

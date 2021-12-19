@@ -27,14 +27,17 @@
                             <option value = "author">Автор</option>
                             <option value = "startDate">Начало периода</option>
                             <option value = "endDate">Окончание периода</option>
-                            <option value = "executor">Исполнитель</option>
+<!--                            <option value = "executor">Исполнитель</option>-->
+                            <option value = "shortDescribe">Описание</option>
                         </select><br>
                         <select class="form-select" ng-if="taskFilter[$index].fieldName=='author' || taskFilter[$index].fieldName=='executor'"
                                 aria-describedby="inputGroup-sizing-sm" ng-model="taskFilter[$index].fieldValue" id="taskFilterUser_value" ng-options="u.id as u.shortname for u in users">
                             <option value = "">--Не выбран--</option>
                         </select>
                         <input ng-if="taskFilter[$index].fieldName=='startDate' || taskFilter[$index].fieldName=='endDate'"
-                               type="date" ng-model="taskFilter[$index].fieldValueDate" id="taskFilterDate_value"><br>
+                               type="date" ng-model="taskFilter[$index].fieldValue" id="taskFilterDate_value"><br>
+                        <input ng-if="taskFilter[$index].fieldName=='shortDescribe'"
+                               type="text" ng-model="taskFilter[$index].fieldValue" id="taskFilterDecsr_value"><br>
                         <button type="button" class="btn btn-default btn-sm" ng-click="removeFilter($index)">
                             <span class="glyphicon glyphicon-minus" class="bg-danger"></span> Удалить
                         </button>

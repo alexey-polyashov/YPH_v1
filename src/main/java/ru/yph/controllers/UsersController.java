@@ -6,12 +6,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.yph.dto.user.NewUserDTO;
-import ru.yph.dto.user.UserDTO;
+import ru.yph.dtos.user.NewUserDTO;
+import ru.yph.dtos.user.UserDTO;
 import ru.yph.entities.user.User;
 import ru.yph.exceptions.ResourceNotFoundException;
 import ru.yph.mappers.UserMapper;
-import ru.yph.service.UserService;
+import ru.yph.services.UserService;
 
 import javax.validation.Valid;
 import java.security.Principal;

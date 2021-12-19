@@ -34,12 +34,24 @@ console.log(response.data);
 
     $scope.loadTasks = function(){
         var recordsOnPage = 20;
-        $http({
-            url: baseURL_tasksAPI + 'tasklist',
-            method: 'GET',
-            params: {'page': $scope.pageCounter,
-                     'recordsOnPage': recordsOnPage}
-         })
+        var filter = [];
+        $scope.taskFilter.forEach(function(criteria, i){
+            if(criteria.fieldName=="startDate"){
+                filter.push({"key": "initionDate", "operation": ">", "value": criteria.fieldValue});
+            }
+            else if(criteria.fieldName=="endDate"){
+                filter.push({"key": "initionDate", "operation": "<", "value": criteria.fieldValue});
+            }
+            else{
+                filter.push({"key": criteria.fieldName, "operation": ":", "value": criteria.fieldValue});
+            }
+        });
+console.log(filter);
+        var reqParam = {'page': $scope.pageCounter,
+                             'recordsOnPage': recordsOnPage,
+                             'filter': filter};
+console.log(reqParam);
+        $http.post(baseURL_tasksAPI + '/tasklist/filter/', reqParam )
         .then(function successCallback(response){
             showTasks(response.data);
         }, function errorCallback(response) {
